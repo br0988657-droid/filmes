@@ -1,235 +1,210 @@
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineAI | Seu Guia Inteligente de Filmes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CINEMA AI | Powered by SKYNET Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0c;
-            color: #e2e8f0;
+            margin: 0;
+            color: #fff;
+            /* Degradê idêntico ao do SKYNETchat que você enviou */
+            background-image: linear-gradient(180deg, #A11111 0%, #751414 10%, #3C0909 31%, #330808 39%, #2E0707 46%, #290606 60%, #260505 67%, #230505 73%, #210404 83%, #1F0404 83%, #1B0303 92%);
+            background-attachment: fixed;
+            min-height: 100vh;
         }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .skynet-sidebar {
+            background: hsl(0, 0%, 5%);
+            border-right: 1px solid hsl(0, 0%, 12%);
         }
-
-        .movie-card:hover .overlay {
-            opacity: 1;
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .gradient-text {
-            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hidden { display: none; }
+        .chat-bubble-ai {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0 18px 18px 18px;
         }
-
-        .ai-glow {
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        .chat-bubble-user {
+            background: #e61a1a;
+            border-radius: 18px 0 18px 18px;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <!-- Navegação -->
-    <nav class="fixed top-0 w-full z-50 glass px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <i data-lucide="sparkles" class="text-indigo-500"></i>
-            <span class="text-xl font-extrabold tracking-tighter">CINE<span class="gradient-text">AI</span></span>
+    <!-- TELA 1: LANDING PAGE (ESTILO SKYNET) -->
+    <section id="screen-landing" class="min-h-screen flex flex-col items-center justify-center px-6 text-center animate-fade">
+        <div class="mb-6 w-20 h-20 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-600/40 rotate-3">
+            <i data-lucide="film" class="w-10 h-10 text-white"></i>
         </div>
-        <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-            <a href="#" class="hover:text-white transition">Início</a>
-            <a href="#analise" class="hover:text-white transition">Análise de Gosto</a>
-            <a href="#catalogo" class="hover:text-white transition">Catálogo</a>
-        </div>
-        <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full text-sm font-semibold transition ai-glow">
-            Entrar
-        </button>
-    </nav>
-
-    <!-- Hero Section -->
-    <header class="pt-32 pb-20 px-6 text-center max-w-4xl mx-auto">
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-            Pare de procurar. <br>
-            <span class="gradient-text">Deixe a IA escolher.</span>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">
+            CINEMA <span class="text-red-500">AI</span>
         </h1>
-        <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-            Nossa inteligência analisa seus filmes e séries favoritos para encontrar a próxima obra-prima que combina perfeitamente com você.
+        <p class="text-slate-300 text-lg max-w-xl mb-10 leading-relaxed">
+            A inteligência artificial que analisa seus gostos na Netflix e sugere o filme perfeito para cada dia.
         </p>
-        <a href="#analise" class="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition inline-flex items-center gap-2">
-            Começar Análise <i data-lucide="arrow-right" class="w-5 h-5"></i>
-        </a>
-    </header>
+        <button onclick="showScreen('screen-auth')" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-red-500 hover:text-white transition-all transform hover:scale-105 flex items-center gap-2 mx-auto">
+            Acessar App <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+    </section>
 
-    <!-- Seção de Análise de Gosto -->
-    <section id="analise" class="py-20 px-6">
-        <div class="max-w-3xl mx-auto glass rounded-3xl p-8 md:p-12 ai-glow">
-            <div class="text-center mb-10">
-                <div class="inline-block p-3 bg-indigo-500/20 rounded-2xl mb-4">
-                    <i data-lucide="brain-circuit" class="text-indigo-400 w-8 h-8"></i>
+    <!-- TELA 2: LOGIN (ESTILO SKYNET) -->
+    <section id="screen-auth" class="min-h-screen hidden flex items-center justify-center px-6 animate-fade">
+        <div class="glass-panel w-full max-w-md p-10 rounded-[32px] shadow-2xl text-center">
+            <div class="flex justify-center mb-6">
+                <div class="p-3 bg-red-600/20 rounded-full border border-red-600/30">
+                    <i data-lucide="lock" class="w-6 h-6 text-red-500"></i>
                 </div>
-                <h2 class="text-3xl font-bold mb-2">Analisador de Perfil</h2>
-                <p class="text-slate-400">Digite os filmes ou séries que você ama para a IA processar.</p>
             </div>
-
-            <div class="space-y-6">
-                <div class="relative">
-                    <input type="text" id="movieInput" 
-                        class="w-full bg-slate-900 border border-slate-700 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-indigo-500 transition placeholder:text-slate-600" 
-                        placeholder="Ex: Interestelar, Breaking Bad, Dark...">
-                    <button onclick="addMovie()" class="absolute right-2 top-2 bg-indigo-600 p-2 rounded-xl hover:bg-indigo-500 transition">
-                        <i data-lucide="plus" class="w-6 h-6"></i>
-                    </button>
+            <h2 class="text-3xl font-black mb-2">Autenticação</h2>
+            <p class="text-slate-400 mb-8">Faça login para sincronizar seus gostos</p>
+            
+            <div class="space-y-4">
+                <button onclick="simulateLogin()" class="w-full flex items-center justify-center gap-3 bg-white text-black py-4 rounded-2xl font-semibold hover:bg-slate-200 transition-all">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
+                    Entrar com Google
+                </button>
+                
+                <div class="flex items-center gap-4 py-4">
+                    <div class="h-px bg-white/10 flex-1"></div>
+                    <span class="text-xs text-slate-500 uppercase font-bold">ou</span>
+                    <div class="h-px bg-white/10 flex-1"></div>
                 </div>
 
-                <div id="movieList" class="flex flex-wrap gap-3">
-                    <!-- Tags de filmes entram aqui -->
-                </div>
-
-                <button onclick="analyzeTaste()" id="btnAnalyze" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl font-bold text-lg hover:opacity-90 transition flex justify-center items-center gap-3">
-                    <i data-lucide="zap" class="w-5 h-5"></i> Analisar Meus Gostos
+                <input type="email" placeholder="E-mail" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 transition-all">
+                <input type="password" placeholder="Senha" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 transition-all">
+                <button onclick="simulateLogin()" class="w-full bg-red-600 text-white py-4 rounded-2xl font-bold hover:bg-red-500 transition-all">
+                    Entrar no Sistema
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Resultados da IA (Oculto inicialmente) -->
-    <section id="results" class="hidden py-20 px-6 max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div>
-                <h2 class="text-4xl font-bold mb-4">Sugestões <span class="gradient-text">Personalizadas</span></h2>
-                <div id="aiReasoning" class="text-slate-400 max-w-2xl italic">
-                    <!-- Texto da IA explicando a escolha -->
+    <!-- TELA 3: APP CHATBOT (ESTRUTURA SKYNET) -->
+    <section id="screen-chat" class="min-h-screen hidden flex animate-fade">
+        <!-- Sidebar Estilo SKYNET -->
+        <aside class="skynet-sidebar w-[70px] hidden md:flex flex-col items-center py-4 gap-4">
+            <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center mb-4">
+                <i data-lucide="film" class="w-6 h-6 text-white"></i>
+            </div>
+            <button class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-red-500 hover:bg-white/5 transition-all">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+            </button>
+            <button class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-red-500 hover:bg-white/5 transition-all">
+                <i data-lucide="history" class="w-5 h-5"></i>
+            </button>
+            <div class="mt-auto flex flex-col gap-4">
+                <button onclick="showScreen('screen-landing')" class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-red-500 transition-all">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Área do Chat -->
+        <div class="flex-1 flex flex-col h-screen relative">
+            <!-- Header -->
+            <header class="h-14 flex items-center justify-between px-6 border-b border-white/10 bg-black/20 backdrop-blur-md">
+                <div class="flex items-center gap-3">
+                    <span class="font-bold tracking-tight">CINEMA AI <span class="text-red-500">4.5</span></span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> IA Ativa
+                </div>
+            </header>
+
+            <!-- Mensagens -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 custom-scrollbar max-w-3xl mx-auto w-full">
+                <div class="flex flex-col gap-2">
+                    <div class="chat-bubble-ai p-4 max-w-[85%] text-slate-200">
+                        Olá! Sou sua IA de curadoria cinematográfica. 🎬 <br><br>
+                        Para eu analisar seu perfil, me diga: <b>Quais filmes ou séries você assistiu recentemente e amou?</b>
+                    </div>
+                    <span class="text-[10px] text-slate-500 ml-1">Cinema AI • Agora</span>
                 </div>
             </div>
-            <button onclick="resetAnalysis()" class="text-slate-500 hover:text-white text-sm flex items-center gap-2 transition">
-                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Reiniciar Análise
-            </button>
-        </div>
 
-        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Cards de filmes entram aqui -->
+            <!-- Input -->
+            <div class="p-4 md:p-8 max-w-3xl mx-auto w-full">
+                <form id="chat-form" class="glass-panel p-2 rounded-full flex items-center gap-2 focus-within:ring-2 focus-within:ring-red-600 transition-all">
+                    <input id="chat-input" type="text" placeholder="Ex: Gostei de Interstellar e Dark..." class="flex-1 bg-transparent px-4 py-3 focus:outline-none text-white">
+                    <button type="submit" class="bg-red-600 p-3 rounded-full text-white hover:bg-red-500 transition-all shadow-lg shadow-red-600/30">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-slate-800 text-center text-slate-500 text-sm">
-        <p>&copy; 2026 CineAI - Inteligência Artificial para Cinema</p>
-    </footer>
-
     <script>
-        // Banco de dados simulado para a "IA"
-        const movieDatabase = [
-            { title: "Inception", genre: "Sci-Fi", img: "https://images.pexels.com/photos/3137890/pexels-photo-3137890.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Sonhos dentro de sonhos e manipulação da realidade." },
-            { title: "The Dark Knight", genre: "Action", img: "https://images.pexels.com/photos/28227728/pexels-photo-28227728.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "O caos contra a ordem em Gotham City." },
-            { title: "Stranger Things", genre: "Sci-Fi", img: "https://images.pexels.com/photos/7234386/pexels-photo-7234386.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Mistérios sobrenaturais nos anos 80." },
-            { title: "The Godfather", genre: "Crime", img: "https://images.pexels.com/photos/24304636/pexels-photo-24304636.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "A saga da família Corleone no crime organizado." },
-            { title: "Interstellar", genre: "Sci-Fi", img: "https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Uma jornada através de buracos negros para salvar a humanidade." },
-            { title: "Breaking Bad", genre: "Crime", img: "https://images.pexels.com/photos/4982005/pexels-photo-4982005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Um professor de química que vira barão das drogas." },
-            { title: "Blade Runner 2049", genre: "Sci-Fi", img: "https://images.pexels.com/photos/2923675/pexels-photo-2923675.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "A busca pela identidade em um futuro distópico." },
-            { title: "Pulp Fiction", genre: "Crime", img: "https://images.pexels.com/photos/20758854/pexels-photo-20758854.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Histórias entrelaçadas no submundo do crime." },
-        ];
-
-        let userMovies = [];
-
-        function addMovie() {
-            const input = document.getElementById('movieInput');
-            const val = input.value.trim();
-            if (val && !userMovies.includes(val)) {
-                userMovies.push(val);
-                renderTags();
-                input.value = '';
-            }
-        }
-
-        function renderTags() {
-            const container = document.getElementById('movieList');
-            container.innerHTML = userMovies.map((m, i) => `
-                <span class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-sm flex items-center gap-2 border border-indigo-500/30">
-                    ${m} <button onclick="removeMovie(${i})" class="hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </span>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        function removeMovie(index) {
-            userMovies.splice(index, 1);
-            renderTags();
-        }
-
-        function analyzeTaste() {
-            if (userMovies.length === 0) {
-                alert("Por favor, adicione pelo menos um filme ou série!");
-                return;
-            }
-
-            const btn = document.getElementById('btnAnalyze');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processando Perfil...`;
-            lucide.createIcons();
-
-            // Simula tempo de processamento da IA
-            setTimeout(() => {
-                btn.innerHTML = `<i data-lucide="zap" class="w-5 h-5"></i> Analisar Meus Gostos`;
-                lucide.createIcons();
-                
-                document.getElementById('results').classList.remove('hidden');
-                
-                // Lógica simples de "IA": Se tiver palavras como "Dark", "Interstellar", "Sci-fi", sugere Sci-Fi.
-                // Se tiver "Breaking", "Godfather", sugere Crime.
-                const tasteText = userMovies.join(' ').toLowerCase();
-                let genrePreference = "Sci-Fi"; // Default
-                let reasoning = "Com base no seu interesse por narrativas complexas e mundos expansivos, nossa IA identificou que você aprecia obras com alta carga visual e conceitos filosóficos.";
-
-                if (tasteText.includes('crime') || tasteText.includes('breaking') || tasteText.includes('mafia')) {
-                    genrePreference = "Crime";
-                    reasoning = "Detectamos uma preferência por dramas criminais, tensão psicológica e tramas de poder. Sugerimos obras com personagens moralmente ambíguos.";
-                } else if (tasteText.includes('ação') || tasteText.includes('batman') || tasteText.includes('luta')) {
-                    genrePreference = "Action";
-                    reasoning = "Seu perfil indica entusiasmo por ritmo acelerado, coreografias de luta e conflitos épicos.";
-                }
-
-                document.getElementById('aiReasoning').innerText = reasoning;
-                
-                const filtered = movieDatabase.filter(m => m.genre === genrePreference);
-                renderMovies(filtered);
-                
-                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-            }, 1500);
-        }
-
-        function renderMovies(movies) {
-            const grid = document.getElementById('movieGrid');
-            grid.innerHTML = movies.map(m => `
-                <div class="movie-card relative group overflow-hidden rounded-2xl glass transition-all duration-500 hover:-translate-y-2">
-                    <img src="${m.img}" alt="${m.title}" class="w-full h-64 object-cover opacity-80 group-hover:opacity-40 transition">
-                    <div class="overlay absolute inset-0 p-6 flex flex-col justify-end opacity-0 transition-opacity duration-300 bg-gradient-to-t from-black via-black/60 to-transparent">
-                        <span class="text-xs font-bold text-indigo-400 uppercase mb-2">${m.genre}</span>
-                        <h3 class="text-xl font-bold mb-2">${m.title}</h3>
-                        <p class="text-sm text-slate-300 mb-4">${m.desc}</p>
-                        <button class="w-full py-2 bg-white text-black rounded-lg font-bold text-sm hover:bg-indigo-100 transition">
-                            Assistir Agora
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function resetAnalysis() {
-            userMovies = [];
-            document.getElementById('movieList').innerHTML = '';
-            document.getElementById('results').classList.add('hidden');
-            document.getElementById('movieInput').value = '';
-        }
-
-        // Inicializa ícones
         lucide.createIcons();
+
+        function showScreen(screenId) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function simulateLogin() {
+            showScreen('screen-chat');
+        }
+
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+
+        function addMessage(text, role) {
+            const isAI = role === 'ai';
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex flex-col gap-2 ${isAI ? '' : 'items-end'} animate-fade`;
+            
+            msgDiv.innerHTML = `
+                <div class="${isAI ? 'chat-bubble-ai text-slate-200' : 'chat-bubble-user text-white'} p-4 max-w-[85%]">
+                    ${text}
+                </div>
+                <span class="text-[10px] text-slate-500 ${isAI ? 'ml-1' : 'mr-1'}">${isAI ? 'Cinema AI' : 'Você'} • Agora</span>
+            `;
+            
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            chatInput.value = '';
+
+            setTimeout(() => {
+                const response = generateAIResponse(text);
+                addMessage(response, 'ai');
+            }, 1000);
+        });
+
+        function generateAIResponse(input) {
+            const text = input.toLowerCase();
+            if (text.includes('netflix') || text.includes('analisa')) {
+                return "Sincronizando com seus dados da Netflix... 🔄 <br><br>Vejo que você gosta de suspense psicológico. Recomendo <b>'Mindhunter'</b> ou <b>'The Silence of the Lambs'</b>. O que acha?";
+            }
+            if (text.includes('filme') || text.includes('série')) {
+                return "Analisando esses títulos... 🧠 <br><br>Com base no seu gosto, minha sugestão diária é: <b>'Inception'</b>. Ele tem a complexidade que você procura. Quer que eu procure onde assistir?";
+            }
+            return "Entendido! Estou processando essas informações. Você prefere algo mais emocionante ou algo para relaxar agora?";
+        }
     </script>
 </body>
 </html>
