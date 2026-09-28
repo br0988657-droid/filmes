@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netflix AI - Descubra Seu Próximo Filme Favorito</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            netflix: {
+              red: '#E50914',
+              darkRed: '#B81D24',
+              black: '#141414',
+              card: '#181818',
+              gray: '#808080'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Estilos personalizados para scrollbar e transições */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #141414;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #E50914;
+    }
+    .hero-gradient {
+      background: linear-gradient(180deg, rgba(20,20,20,0) 0%, rgba(20,20,20,0.8) 70%, #141414 100%),
+                  linear-gradient(90deg, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0.4) 50%, rgba(20,20,20,0.1) 100%);
+    }
+    .poster-hover:hover {
+      transform: scale(1.06) translateY(-4px);
+    }
+  </style>
+</head>
+<body class="bg-netflix-black text-white font-sans antialiased min-h-screen selection:bg-netflix-red selection:text-white pb-20">
+
+  <!-- Cabeçalho de Navegação -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 bg-gradient-to-b from-black/90 to-transparent backdrop-blur-sm transition-all duration-300">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <span class="text-netflix-red font-black text-2xl md:text-3xl tracking-tighter">NETFLIX</span>
+        <span class="bg-netflix-red text-white text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wider flex items-center gap-1">
+          <i data-lucide="sparkles" class="w-3 h-3"></i> AI
+        </span>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="#hero" class="hover:text-white transition">Início</a>
+        <a href="#scanner" class="hover:text-white transition flex items-center gap-1"><i data-lucide="eye" class="w-4 h-4"></i> Analisador Visual</a>
+        <a href="#cinebot" class="hover:text-white transition flex items-center gap-1"><i data-lucide="message-square" class="w-4 h-4"></i> Chatbot IA</a>
+        <a href="#recomendacoes" class="hover:text-white transition">Catálogo Inteligente</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="scrollToElement('cinebot')" class="bg-netflix-red hover:bg-netflix-darkRed text-white px-4 py-2 rounded font-medium text-sm transition flex items-center gap-2 shadow-lg shadow-netflix-red/30">
+        <i data-lucide="bot" class="w-4 h-4"></i>
+        <span>Abrir CineBot</span>
+      </button>
+      <div class="w-9 h-9 rounded bg-blue-600 flex items-center justify-center font-bold text-sm cursor-pointer border-2 border-transparent hover:border-white transition">
+        B
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner com Apresentação -->
+  <section id="hero" class="relative h-[85vh] flex items-center px-6 md:px-16 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80" 
+           alt="Cinema Hero" class="w-full h-full object-cover">
+      <div class="absolute inset-0 hero-gradient"></div>
+    </div>
+
+    <div class="relative z-10 max-w-2xl space-y-5 mt-16">
+      <div class="inline-flex items-center gap-2 bg-red-950/60 border border-netflix-red/40 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide text-red-200">
+        <i data-lucide="brain-circuit" class="w-4 h-4 text-netflix-red"></i>
+        RECOMENDAÇÃO HIPERPERSONALIZADA POR REDES NEURAIS
+      </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+        Sua próxima maratona, prevista por Inteligência Artificial.
+      </h1>
+      <p class="text-gray-300 text-base md:text-lg leading-relaxed">
+        Chega de passar 40 minutos rodando o catálogo. Nossa IA analisa suas preferências visuais por capas de filmes e conversa com você para indicar produções certeiras.
+      </p>
+      <div class="flex flex-wrap items-center gap-4 pt-2">
+        <button onclick="scrollToElement('scanner')" class="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded-md font-bold text-base transition flex items-center gap-2 shadow-md">
+          <i data-lucide="sparkles" class="w-5 h-5 text-netflix-red"></i>
+          Escanear Minhas Capas
+        </button>
+        <button onclick="scrollToElement('cinebot')" class="bg-gray-800/80 hover:bg-gray-700/80 border border-gray-600 px-6 py-3 rounded-md font-semibold text-base transition flex items-center gap-2 backdrop-blur-sm">
+          <i data-lucide="message-circle" class="w-5 h-5"></i>
+          Conversar com o CineBot
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Módulo 1: Analisador Visual por Capas -->
+  <section id="scanner" class="px-6 md:px-16 py-16 bg-gradient-to-b from-netflix-black via-[#101010] to-netflix-black">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-netflix-red text-xs uppercase font-bold tracking-widest mb-1">
+            <i data-lucide="scan" class="w-4 h-4"></i> Visão Computacional Simulada
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold">1. Escolha as capas que chamam sua atenção</h2>
+          <p class="text-gray-400 text-sm mt-1">Clique em 2 ou mais pôsteres abaixo. A IA vai analisar paleta de cor, atmosfera e arquétipos para revelar seu perfil.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="selected-counter" class="text-xs bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700 text-gray-300">
+            0 selecionados
+          </span>
+          <button id="btn-analyze" onclick="executarAnaliseVisual()" disabled 
+                  class="bg-netflix-red disabled:bg-gray-800 disabled:text-gray-500 hover:bg-netflix-darkRed text-white px-5 py-2 rounded-md font-medium text-sm transition flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed">
+            <i data-lucide="cpu" class="w-4 h-4"></i> Analisar Gosto com IA
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid de Capas Interativas -->
+      <div id="poster-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <!-- Card de Resultado da Análise -->
+      <div id="analysis-result" class="hidden mt-10 p-6 md:p-8 bg-netflix-card border border-gray-800 rounded-xl transition-all duration-500">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-4 mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-netflix-red/20 text-netflix-red flex items-center justify-center">
+              <i data-lucide="check-circle" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold">Diagnóstico Cognitivo Concluído</h3>
+              <p class="text-xs text-gray-400">Processado com base nos arquétipos visuais selecionados</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono bg-green-950/60 border border-green-800 text-green-400 px-3 py-1 rounded-full">Confiança: 98.4%</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-4">
+            <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400">Distribuição de Estilo</h4>
+            <div id="genres-bars" class="space-y-3">
+              <!-- Barras geradas dinamicamente -->
+            </div>
+          </div>
+          <div class="space-y-2 md:col-span-2 bg-black/40 p-5 rounded-lg border border-gray-800/80">
+            <h4 class="text-sm font-semibold uppercase tracking-wider text-netflix-red flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Veredito da Inteligência Artificial
+            </h4>
+            <p id="ai-verdict-text" class="text-gray-200 text-sm leading-relaxed pt-1">
+              <!-- Injetado por JS -->
+            </p>
+            <div class="pt-4 border-t border-gray-800/80">
+              <span class="text-xs text-gray-400 block mb-2 font-medium">Recomendações Imediatas Para Seu Humor:</span>
+              <div id="verdict-chips" class="flex flex-wrap gap-2">
+                <!-- Chips gerados por JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Módulo 2: CineBot IA Conversacional -->
+  <section id="cinebot" class="px-6 md:px-16 py-16 bg-[#0f0f0f] border-t border-b border-gray-900">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-8">
+        <div class="inline-flex items-center gap-2 bg-netflix-red/10 text-netflix-red px-3 py-1 rounded-full text-xs font-semibold mb-2">
+          <i data-lucide="bot" class="w-3.5 h-3.5"></i> ASSISTENTE CONVERSACIONAL DE CINEMA
+        </div>
+        <h2 class="text-3xl font-extrabold tracking-tight">CineBot: Converse com a IA</h2>
+        <p class="text-gray-400 text-sm mt-2">Diga o que você assistiu recentemente, seu estado de espírito ou que tipo de reviravolta você procura.</p>
+      </div>
+
+      <!-- Container do Chat -->
+      <div class="bg-netflix-card border border-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[560px]">
+        
+        <!-- Header do Chat -->
+        <div class="bg-black/60 px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <div class="w-10 h-10 rounded-full bg-netflix-red flex items-center justify-center font-bold text-white shadow-lg shadow-netflix-red/20">
+                <i data-lucide="film" class="w-5 h-5"></i>
+              </div>
+              <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-netflix-card"></span>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm flex items-center gap-1.5">
+                CineBot Netflix 
+                <span class="text-[10px] bg-red-950 text-red-300 border border-red-800/60 px-1.5 py-0.2 rounded">v3.5</span>
+              </h3>
+              <p class="text-xs text-gray-400">Pronto para cruzar mais de 40.000 títulos</p>
+            </div>
+          </div>
+          <button onclick="limparChat()" title="Limpar conversa" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-800 transition">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Mensagens do Chat -->
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
+          <!-- Mensagem inicial do bot -->
+          <div class="flex items-start gap-3 max-w-[85%]">
+            <div class="w-8 h-8 rounded-full bg-netflix-red shrink-0 flex items-center justify-center text-xs font-bold">
+              AI
+            </div>
+            <div class="bg-gray-800/90 text-gray-100 p-4 rounded-2xl rounded-tl-none border border-gray-700/60 text-sm leading-relaxed space-y-2">
+              <p>Olá! Eu sou o seu curador de cinema por IA. 🎬</p>
+              <p class="text-gray-300">Me conte: <strong>qual o último filme ou série que você adorou assistir</strong>, ou que vibe você está procurando hoje à noite?</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sugestões Rápidas de Prompt -->
+        <div class="px-6 py-2 bg-black/40 border-t border-gray-800 flex items-center gap-2 overflow-x-auto text-xs whitespace-nowrap">
+          <span class="text-gray-500 font-medium">Sugestões:</span>
+          <button onclick="enviarPromptPronto('Adorei Interestelar e A Origem, o que vejo agora?')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded-full border border-gray-700 transition">
+            🚀 Ficção científica com reviravolta
+          </button>
+          <button onclick="enviarPromptPronto('Quero um suspense psicológico perturbador')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded-full border border-gray-700 transition">
+            🧠 Suspense psicológico
+          </button>
+          <button onclick="enviarPromptPronto('Recomende algo leve e engraçado para assistir a dois')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded-full border border-gray-700 transition">
+            🍿 Comédia leve para relaxar
+          </button>
+        </div>
+
+        <!-- Formulário de Input -->
+        <form id="chat-form" onsubmit="enviarMensagem(event)" class="p-4 bg-black/70 border-t border-gray-800 flex items-center gap-3">
+          <input type="text" id="chat-input" placeholder="Ex: 'Assisti Breaking Bad e Dark, quero algo no mesmo nível...' " 
+                 class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-netflix-red text-white placeholder-gray-500 transition">
+          <button type="submit" class="bg-netflix-red hover:bg-netflix-darkRed text-white p-3 rounded-xl transition shadow-lg shadow-netflix-red/30 flex items-center justify-center">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Módulo 3: Carrossel do Catálogo com Filtros de IA -->
+  <section id="recomendacoes" class="px-6 md:px-16 py-16">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl font-bold">Catálogo Selecionado por IA</h2>
+        <p class="text-sm text-gray-400">Títulos com maior pontuação de afinidade global esta semana</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-400">Filtro Rápido:</span>
+        <button onclick="filtrarCatalogo('todos')" class="filter-btn active bg-netflix-red text-white px-3 py-1 rounded text-xs font-semibold">Todos</button>
+        <button onclick="filtrarCatalogo('sci-fi')" class="filter-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded text-xs font-semibold">Sci-Fi</button>
+        <button onclick="filtrarCatalogo('thriller')" class="filter-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded text-xs font-semibold">Suspense</button>
+        <button onclick="filtrarCatalogo('drama')" class="filter-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded text-xs font-semibold">Drama</button>
+      </div>
+    </div>
+
+    <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <!-- Renderizado via JS -->
+    </div>
+  </section>
+
+  <!-- Modal de Detalhes do Filme -->
+  <div id="movie-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-netflix-card border border-gray-800 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="fecharModal()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-black/60 hover:bg-black text-white rounded-full flex items-center justify-center transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="relative h-64 sm:h-72">
+        <img id="modal-img" src="" alt="Banner" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-netflix-card via-transparent to-transparent"></div>
+        <div class="absolute bottom-4 left-6 right-6">
+          <span id="modal-match" class="bg-green-600 text-white font-black text-xs px-2.5 py-1 rounded-md">98% Match</span>
+          <h3 id="modal-title" class="text-2xl sm:text-3xl font-extrabold mt-2 text-white">Título do Filme</h3>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div class="flex items-center gap-4 text-xs text-gray-400">
+          <span id="modal-year" class="font-bold text-white">2024</span>
+          <span class="border border-gray-700 px-1.5 py-0.5 rounded">16+</span>
+          <span id="modal-duration">2h 18m</span>
+          <span class="bg-netflix-red/20 text-netflix-red px-2 py-0.5 rounded font-semibold" id="modal-genre">Ficção Científica</span>
+        </div>
+        <p id="modal-desc" class="text-sm text-gray-300 leading-relaxed">
+          Sinopse descritiva detalhada sobre o filme, elenco e principais reviravoltas para análise.
+        </p>
+        <div class="bg-black/40 p-4 rounded-xl border border-gray-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-netflix-red"></i>
+            <span class="text-xs text-gray-300">Por que a IA escolheu este título para você:</span>
+          </div>
+          <span class="text-xs font-semibold text-green-400">Baseado no seu perfil</span>
+        </div>
+        <div class="pt-2 flex gap-3">
+          <button class="flex-1 bg-white hover:bg-gray-200 text-black font-bold py-3 rounded-lg text-sm transition flex items-center justify-center gap-2">
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i> Assistir Agora
+          </button>
+          <button onclick="fecharModal()" class="px-5 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold text-sm transition">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="mt-20 border-t border-gray-900 py-10 px-6 md:px-16 text-center text-xs text-gray-500 space-y-3">
+    <div class="flex items-center justify-center gap-2 text-netflix-red font-bold text-base">
+      <i data-lucide="film" class="w-5 h-5"></i> NETFLIX AI INTELLIGENCE
+    </div>
+    <p>Projeto demonstrativo de recomendação e inteligência artificial para GitHub Pages.</p>
+    <p>© 2026 Netflix AI Engine • Desenvolvido com carinho para entusiastas de cinema.</p>
+  </footer>
+
+  <!-- Lógica Javascript Inteligente (100% Autocontida) -->
+  <script>
+    // Banco de Dados Simulado de Filmes com Metadados Ricos
+    const filmesDB = [
+      {
+        id: 1,
+        titulo: "Interestelar",
+        ano: 2014,
+        genero: "sci-fi",
+        generoNome: "Ficção Científica",
+        duracao: "2h 49m",
+        match: 99,
+        capa: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
+        descricao: "Uma equipe de exploradores viaja através de um buraco de minhoca no espaço para garantir a sobrevivência da humanidade contra a escassez global.",
+        tagsVisuais: ["espaço", "buraco negro", "física", "emocional"]
+      },
+      {
+        id: 2,
+        titulo: "Ilha do Medo",
+        ano: 2010,
+        genero: "thriller",
+        generoNome: "Suspense Psicológico",
+        duracao: "2h 18m",
+        match: 97,
+        capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+        descricao: "Em 1954, um inspetor viaja até um hospital psiquiátrico isolado em uma ilha para investigar o misterioso desaparecimento de uma paciente assassina.",
+        tagsVisuais: ["chuva", "mistério", "psicologia", "farol"]
+      },
+      {
+        id: 3,
+        titulo: "Blade Runner 2049",
+        ano: 2017,
+        genero: "sci-fi",
+        generoNome: "Cyberpunk / Sci-Fi",
+        duracao: "2h 44m",
+        match: 96,
+        capa: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
+        descricao: "Trinta anos após os eventos do primeiro filme, um novo Blade Runner desenterra um segredo há muito sepultado que tem o potencial de mergulhar o mundo no caos.",
+        tagsVisuais: ["neon", "cyberpunk", "hologramas", "distopia"]
+      },
+      {
+        id: 4,
+        titulo: "O Poderoso Chefão",
+        ano: 1972,
+        genero: "drama",
+        generoNome: "Drama / Crime",
+        duracao: "2h 55m",
+        match: 98,
+        capa: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+        descricao: "O patriarca envelhecido de uma dinastia do crime organizado transfere o controle de seu império clandestino para seu relutante filho mais novo.",
+        tagsVisuais: ["máfia", "elegância", "sombras", "família"]
+      },
+      {
+        id: 5,
+        titulo: "Garota Exemplar",
+        ano: 2014,
+        genero: "thriller",
+        generoNome: "Suspense",
+        duracao: "2h 29m",
+        match: 95,
+        capa: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80",
+        descricao: "Com o desaparecimento de sua esposa no aniversário de casamento, o foco da mídia e as investigações policiais revelam segredos chocantes do casal.",
+        tagsVisuais: ["tensão", "manipulação", "investigação", "mídia"]
+      },
+      {
+        id: 6,
+        titulo: "Duna: Parte 2",
+        ano: 2024,
+        genero: "sci-fi",
+        generoNome: "Épico Espacial",
+        duracao: "2h 46m",
+        match: 99,
+        capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
+        descricao: "Paul Atreides se une a Chani e aos Fremen em busca de vingança contra os conspiradores que destruíram sua família, diante de uma escolha entre o amor e o universo.",
+        tagsVisuais: ["deserto", "vermes gigantes", "guerra", "profecia"]
+      },
+      {
+        id: 7,
+        titulo: "Parasita",
+        ano: 2019,
+        genero: "drama",
+        generoNome: "Drama / Suspense",
+        duracao: "2h 12m",
+        match: 98,
+        capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+        descricao: "Uma família desempregada começa a se infiltrar como funcionários na casa de uma família rica, levando a consequências imprevisíveis e chocantes.",
+        tagsVisuais: ["arquitetura", "sátira", "classes sociais", "chuva"]
+      },
+      {
+        id: 8,
+        titulo: "Seven: Os Sete Crimes Capitais",
+        ano: 1995,
+        genero: "thriller",
+        generoNome: "Policial / Suspense",
+        duracao: "2h 07m",
+        match: 97,
+        capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
+        descricao: "Dois detetives, um veterano e um novato, caçam um serial killer metódico cujos assassinatos encenam os sete pecados capitais.",
+        tagsVisuais: ["chuva constante", "escuridão", "crimes", "filosofia"]
+      },
+      {
+        id: 9,
+        titulo: "Dark (Série)",
+        ano: 2020,
+        genero: "sci-fi",
+        generoNome: "Mistério Temporal",
+        duracao: "3 Temporadas",
+        match: 99,
+        capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+        descricao: "O desaparecimento de duas crianças em uma cidade alemã expõe os relacionamentos fraturados e as vidas duplas de quatro famílias, revelando uma anomalia temporal.",
+        tagsVisuais: ["floresta", "caverna", "tempo", "capa amarela"]
+      },
+      {
+        id: 10,
+        titulo: "O Gambito da Rainha",
+        ano: 2020,
+        genero: "drama",
+        generoNome: "Drama Biográfico",
+        duracao: "Minissérie",
+        match: 94,
+        capa: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=600&q=80",
+        descricao: "Órfã aos nove anos, a prodígio do xadrez Beth Harmon luta contra o vício enquanto busca se tornar a maior jogadora do mundo.",
+        tagsVisuais: ["tabuleiro", "anos 60", "estilo", "mente brilhante"]
+      }
+    ];
+
+    let capasSelecionadas = new Set();
+
+    // Renderizar o grid de pôsteres para análise
+    function renderizarPosters() {
+      const container = document.getElementById('poster-grid');
+      container.innerHTML = filmesDB.map(filme => `
+        <div onclick="toggleCapa(${filme.id})" id="poster-card-${filme.id}" 
+             class="poster-card relative rounded-xl overflow-hidden cursor-pointer border-2 border-transparent transition-all duration-300 poster-hover group bg-netflix-card">
+          <img src="${filme.capa}" alt="${filme.titulo}" class="w-full h-48 sm:h-56 object-cover transition duration-300 group-hover:brightness-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent flex flex-col justify-end p-3">
+            <span class="text-[10px] text-netflix-red font-bold uppercase tracking-wider">${filme.generoNome}</span>
+            <h4 class="text-xs sm:text-sm font-bold text-white leading-tight truncate">${filme.titulo}</h4>
+          </div>
+          <!-- Indicador de Seleção -->
+          <div id="check-${filme.id}" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-netflix-red text-white items-center justify-center hidden shadow-md">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // Alternar seleção de capa
+    function toggleCapa(id) {
+      const card = document.getElementById(`poster-card-${id}`);
+      const check = document.getElementById(`check-${id}`);
+      
+      if (capasSelecionadas.has(id)) {
+        capasSelecionadas.delete(id);
+        card.classList.remove('border-netflix-red', 'ring-2', 'ring-netflix-red/50');
+        check.classList.add('hidden');
+        check.classList.remove('flex');
+      } else {
+        capasSelecionadas.add(id);
+        card.classList.add('border-netflix-red', 'ring-2', 'ring-netflix-red/50');
+        check.classList.remove('hidden');
+        check.classList.add('flex');
+      }
+
+      const counter = document.getElementById('selected-counter');
+      const btnAnalyze = document.getElementById('btn-analyze');
+      
+      counter.innerText = `${capasSelecionadas.size} selecionado(s)`;
+      if (capasSelecionadas.size >= 2) {
+        btnAnalyze.removeAttribute('disabled');
+      } else {
+        btnAnalyze.setAttribute('disabled', 'true');
+      }
+      lucide.createIcons();
+    }
+
+    // Executar a análise visual baseada nas escolhas
+    function executarAnaliseVisual() {
+      const resultCard = document.getElementById('analysis-result');
+      const selectedFilms = filmesDB.filter(f => capasSelecionadas.has(f.id));
+      
+      // Contabilizar gêneros
+      const contagem = { 'Ficção Científica': 0, 'Suspense & Mistério': 0, 'Drama & Profundidade': 0 };
+      selectedFilms.forEach(f => {
+        if (f.genero === 'sci-fi') contagem['Ficção Científica'] += 2;
+        if (f.genero === 'thriller') contagem['Suspense & Mistério'] += 2;
+        if (f.genero === 'drama') contagem['Drama & Profundidade'] += 2;
+      });
+
+      const total = Object.values(contagem).reduce((a, b) => a + b, 0) || 1;
+      const barsContainer = document.getElementById('genres-bars');
+      barsContainer.innerHTML = Object.entries(contagem).map(([nome, valor]) => {
+        const perc = Math.round((valor / total) * 100);
+        return `
+          <div>
+            <div class="flex justify-between text-xs text-gray-300 mb-1">
+              <span>${nome}</span>
+              <span class="font-bold text-white">${perc}%</span>
+            </div>
+            <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+              <div class="bg-netflix-red h-full rounded-full transition-all duration-1000" style="width: ${perc}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Veredito textual da IA
+      const textVerdict = document.getElementById('ai-verdict-text');
+      const chipsContainer = document.getElementById('verdict-chips');
+      
+      textVerdict.innerHTML = `
+        Identificamos uma forte afinidade por <strong>narrativas complexas e atmosferas densas</strong>. 
+        Você prefere paletas cinematográficas frias, tons de mistério psicológico e histórias que desafiam a lógica ou exploram os limites humanos. 
+        Seu cérebro cinematográfico responde a roteiros não-lineares e grandes dilemas éticos.
+      `;
+
+      chipsContainer.innerHTML = `
+        <span class="bg-red-950 text-red-200 border border-red-800 text-xs px-3 py-1 rounded-full">Plot Twists Arrojados</span>
+        <span class="bg-gray-800 text-gray-200 border border-gray-700 text-xs px-3 py-1 rounded-full">Distopias Futuristas</span>
+        <span class="bg-gray-800 text-gray-200 border border-gray-700 text-xs px-3 py-1 rounded-full">Fotografia Noir/Neon</span>
+      `;
+
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      lucide.createIcons();
+    }
+
+    // Renderizar o catálogo filtrável
+    function renderizarCatalogo(filtro = 'todos') {
+      const container = document.getElementById('catalog-grid');
+      const lista = filtro === 'todos' ? filmesDB : filmesDB.filter(f => f.genero === filtro);
+
+      container.innerHTML = lista.map(f => `
+        <div onclick="abrirModal(${f.id})" class="bg-netflix-card rounded-xl overflow-hidden border border-gray-800/80 hover:border-gray-600 transition-all cursor-pointer poster-hover group">
+          <div class="relative h-60">
+            <img src="${f.capa}" alt="${f.titulo}" class="w-full h-full object-cover">
+            <span class="absolute top-2 left-2 bg-black/70 backdrop-blur-sm text-green-400 font-bold text-[11px] px-2 py-0.5 rounded">
+              ${f.match}% Match
+            </span>
+          </div>
+          <div class="p-3.5 space-y-1">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider">${f.generoNome}</span>
+            <h4 class="font-bold text-sm text-white truncate">${f.titulo}</h4>
+            <div class="flex items-center justify-between text-xs text-gray-500 pt-1">
+              <span>${f.ano}</span>
+              <span>${f.duracao}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function filtrarCatalogo(tipo) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-netflix-red', 'text-white');
+        btn.classList.add('bg-gray-800', 'text-gray-300');
+      });
+      event.target.classList.add('bg-netflix-red', 'text-white');
+      event.target.classList.remove('bg-gray-800', 'text-gray-300');
+      renderizarCatalogo(tipo);
+    }
+
+    // Modal de Detalhes
+    function abrirModal(id) {
+      const f = filmesDB.find(item => item.id === id);
+      if (!f) return;
+
+      document.getElementById('modal-img').src = f.capa;
+      document.getElementById('modal-title').innerText = f.titulo;
+      document.getElementById('modal-year').innerText = f.ano;
+      document.getElementById('modal-duration').innerText = f.duracao;
+      document.getElementById('modal-genre').innerText = f.generoNome;
+      document.getElementById('modal-desc').innerText = f.descricao;
+      document.getElementById('modal-match').innerText = `${f.match}% Match`;
+
+      document.getElementById('movie-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function fecharModal() {
+      document.getElementById('movie-modal').classList.add('hidden');
+    }
+
+    // Assistente Chatbot IA
+    function enviarPromptPronto(texto) {
+      document.getElementById('chat-input').value = texto;
+      document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    }
+
+    function enviarMensagem(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const mensagem = input.value.trim();
+      if (!mensagem) return;
+
+      const chatContainer = document.getElementById('chat-messages');
+
+      // Adicionar mensagem do Usuário
+      chatContainer.innerHTML += `
+        <div class="flex items-start justify-end gap-3">
+          <div class="bg-netflix-red text-white p-3.5 rounded-2xl rounded-tr-none text-sm max-w-[80%] leading-relaxed">
+            ${mensagem}
+          </div>
+          <div class="w-8 h-8 rounded-full bg-blue-600 shrink-0 flex items-center justify-center text-xs font-bold">
+            B
+          </div>
+        </div>
+      `;
+
+      input.value = '';
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Animação de digitação do Bot
+      const typingId = 'typing-' + Date.now();
+      chatContainer.innerHTML += `
+        <div id="${typingId}" class="flex items-start gap-3 max-w-[85%]">
+          <div class="w-8 h-8 rounded-full bg-netflix-red shrink-0 flex items-center justify-center text-xs font-bold">
+            AI
+          </div>
+          <div class="bg-gray-800/90 text-gray-400 p-3.5 rounded-2xl rounded-tl-none border border-gray-700/60 text-xs flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></span>
+            <span class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></span>
+            <span class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-300"></span>
+            <span>Processando padrões cinematográficos...</span>
+          </div>
+        </div>
+      `;
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Gerar Resposta Inteligente Contextual
+      setTimeout(() => {
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+
+        const resposta = processarRespostaIA(mensagem);
+
+        chatContainer.innerHTML += `
+          <div class="flex items-start gap-3 max-w-[85%]">
+            <div class="w-8 h-8 rounded-full bg-netflix-red shrink-0 flex items-center justify-center text-xs font-bold shadow-md shadow-netflix-red/30">
+              AI
+            </div>
+            <div class="bg-gray-800/90 text-gray-100 p-4 rounded-2xl rounded-tl-none border border-gray-700/60 text-sm leading-relaxed space-y-3">
+              <p>${resposta.texto}</p>
+              ${resposta.card ? `
+                <div onclick="abrirModal(${resposta.card.id})" class="mt-2 bg-black/60 p-3 rounded-xl border border-gray-700 flex items-center gap-3 cursor-pointer hover:border-netflix-red transition">
+                  <img src="${resposta.card.capa}" class="w-12 h-16 object-cover rounded-md">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-white truncate">${resposta.card.titulo}</span>
+                      <span class="text-[10px] text-green-400 font-bold">${resposta.card.match}% Match</span>
+                    </div>
+                    <p class="text-xs text-gray-400 truncate">${resposta.card.generoNome} • ${resposta.card.ano}</p>
+                    <span class="text-[10px] text-netflix-red flex items-center gap-1 mt-0.5">
+                      <i data-lucide="info" class="w-3 h-3"></i> Clique para ver sinopse
+                    </span>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        lucide.createIcons();
+      }, 900);
+    }
+
+    // Motor de NLP Simplificado para Recomendações
+    function processarRespostaIA(input) {
+      const texto = input.toLowerCase();
+
+      if (texto.includes('sci-fi') || texto.includes('interestelar') || texto.includes('origem') || texto.includes('espaço') || texto.includes('ficção')) {
+        return {
+          texto: "Se você ama ficção científica que te deixa pensando por dias, sua escolha obrigatória é **Dark** ou **Blade Runner 2049**. Ambos compartilham dilemas profundos, visuais estonteantes e trilhas sonoras arrebatadoras.",
+          card: filmesDB.find(f => f.titulo === "Blade Runner 2049")
+        };
+      } else if (texto.includes('suspense') || texto.includes('psicológico') || texto.includes('ilha do medo') || texto.includes('mente')) {
+        return {
+          texto: "Para quem quer roer as unhas, indico fortemente **Seven** ou **Garota Exemplar**. São thrillers com direção cirúrgica e reviravoltas no terceiro ato que você simplesmente não antecipa.",
+          card: filmesDB.find(f => f.titulo === "Ilha do Medo")
+        };
+      } else if (texto.includes('breaking bad') || texto.includes('crime') || texto.includes('série') || texto.includes('máfia')) {
+        return {
+          texto: "Você curte desenvolvimento de personagens complexos e arcos de transformação moral. Vá direto em **O Poderoso Chefão** ou adicione **Ozark** à sua lista!",
+          card: filmesDB.find(f => f.titulo === "O Poderoso Chefão")
+        };
+      } else if (texto.includes('leve') || texto.includes('comédia') || texto.includes('relaxar') || texto.includes('dois')) {
+        return {
+          texto: "Para uma noite mais descontraída sem perder a qualidade narrativa, títulos com ritmo fluido como **O Gambito da Rainha** ou **Parasita** combinam entretenimento e inteligência visual.",
+          card: filmesDB.find(f => f.titulo === "O Gambito da Rainha")
+        };
+      } else {
+        // Resposta padrão inteligente
+        const sugestaoAleatoria = filmesDB[Math.floor(Math.random() * filmesDB.length)];
+        return {
+          texto: `Excelente indicação! Analisando o seu gosto por narrativas marcantes, calculei uma compatibilidade de **${sugestaoAleatoria.match}%** com **${sugestaoAleatoria.titulo}**. Você vai curtir a progressão da história.`,
+          card: sugestaoAleatoria
+        };
+      }
+    }
+
+    function limparChat() {
+      document.getElementById('chat-messages').innerHTML = `
+        <div class="flex items-start gap-3 max-w-[85%]">
+          <div class="w-8 h-8 rounded-full bg-netflix-red shrink-0 flex items-center justify-center text-xs font-bold">
+            AI
+          </div>
+          <div class="bg-gray-800/90 text-gray-100 p-4 rounded-2xl rounded-tl-none border border-gray-700/60 text-sm leading-relaxed space-y-2">
+            <p>Histórico reiniciado! 🎬 Me diga que filme assistiu recentemente ou que tipo de história você quer hoje.</p>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function scrollToElement(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+      renderizarPosters();
+      renderizarCatalogo();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
