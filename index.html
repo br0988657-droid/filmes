@@ -1,16 +1,235 @@
-<body>
-  <h1>🎬 Catálogo de Filmes</h1>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineAI | Seu Guia Inteligente de Filmes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+            color: #e2e8f0;
+        }
 
-  <div class="filme">
-    <img src="https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg" alt="Matrix" width="200">
-    <h2>Matrix (1999)</h2>
-    <p>Um hacker descobre a verdade sobre a realidade simulada em que vive.</p>
-  </div>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-  <div class="filme">
-    <img src="https://upload.wikimedia.org/wikipedia/en/0/0e/Avengers_Endgame_poster.jpg" alt="Vingadores Ultimato" width="200">
-    <h2>Vingadores: Ultimato (2019)</h2>
-    <p>Os heróis se unem para derrotar Thanos e restaurar o universo.</p>
-  </div>
+        .movie-card:hover .overlay {
+            opacity: 1;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Navegação -->
+    <nav class="fixed top-0 w-full z-50 glass px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="text-indigo-500"></i>
+            <span class="text-xl font-extrabold tracking-tighter">CINE<span class="gradient-text">AI</span></span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+            <a href="#" class="hover:text-white transition">Início</a>
+            <a href="#analise" class="hover:text-white transition">Análise de Gosto</a>
+            <a href="#catalogo" class="hover:text-white transition">Catálogo</a>
+        </div>
+        <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full text-sm font-semibold transition ai-glow">
+            Entrar
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-20 px-6 text-center max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+            Pare de procurar. <br>
+            <span class="gradient-text">Deixe a IA escolher.</span>
+        </h1>
+        <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+            Nossa inteligência analisa seus filmes e séries favoritos para encontrar a próxima obra-prima que combina perfeitamente com você.
+        </p>
+        <a href="#analise" class="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-200 transition inline-flex items-center gap-2">
+            Começar Análise <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </a>
+    </header>
+
+    <!-- Seção de Análise de Gosto -->
+    <section id="analise" class="py-20 px-6">
+        <div class="max-w-3xl mx-auto glass rounded-3xl p-8 md:p-12 ai-glow">
+            <div class="text-center mb-10">
+                <div class="inline-block p-3 bg-indigo-500/20 rounded-2xl mb-4">
+                    <i data-lucide="brain-circuit" class="text-indigo-400 w-8 h-8"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-2">Analisador de Perfil</h2>
+                <p class="text-slate-400">Digite os filmes ou séries que você ama para a IA processar.</p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="relative">
+                    <input type="text" id="movieInput" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-indigo-500 transition placeholder:text-slate-600" 
+                        placeholder="Ex: Interestelar, Breaking Bad, Dark...">
+                    <button onclick="addMovie()" class="absolute right-2 top-2 bg-indigo-600 p-2 rounded-xl hover:bg-indigo-500 transition">
+                        <i data-lucide="plus" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div id="movieList" class="flex flex-wrap gap-3">
+                    <!-- Tags de filmes entram aqui -->
+                </div>
+
+                <button onclick="analyzeTaste()" id="btnAnalyze" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl font-bold text-lg hover:opacity-90 transition flex justify-center items-center gap-3">
+                    <i data-lucide="zap" class="w-5 h-5"></i> Analisar Meus Gostos
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resultados da IA (Oculto inicialmente) -->
+    <section id="results" class="hidden py-20 px-6 max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+                <h2 class="text-4xl font-bold mb-4">Sugestões <span class="gradient-text">Personalizadas</span></h2>
+                <div id="aiReasoning" class="text-slate-400 max-w-2xl italic">
+                    <!-- Texto da IA explicando a escolha -->
+                </div>
+            </div>
+            <button onclick="resetAnalysis()" class="text-slate-500 hover:text-white text-sm flex items-center gap-2 transition">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Reiniciar Análise
+            </button>
+        </div>
+
+        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Cards de filmes entram aqui -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-800 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 CineAI - Inteligência Artificial para Cinema</p>
+    </footer>
+
+    <script>
+        // Banco de dados simulado para a "IA"
+        const movieDatabase = [
+            { title: "Inception", genre: "Sci-Fi", img: "https://images.pexels.com/photos/3137890/pexels-photo-3137890.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Sonhos dentro de sonhos e manipulação da realidade." },
+            { title: "The Dark Knight", genre: "Action", img: "https://images.pexels.com/photos/28227728/pexels-photo-28227728.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "O caos contra a ordem em Gotham City." },
+            { title: "Stranger Things", genre: "Sci-Fi", img: "https://images.pexels.com/photos/7234386/pexels-photo-7234386.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Mistérios sobrenaturais nos anos 80." },
+            { title: "The Godfather", genre: "Crime", img: "https://images.pexels.com/photos/24304636/pexels-photo-24304636.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "A saga da família Corleone no crime organizado." },
+            { title: "Interstellar", genre: "Sci-Fi", img: "https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Uma jornada através de buracos negros para salvar a humanidade." },
+            { title: "Breaking Bad", genre: "Crime", img: "https://images.pexels.com/photos/4982005/pexels-photo-4982005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Um professor de química que vira barão das drogas." },
+            { title: "Blade Runner 2049", genre: "Sci-Fi", img: "https://images.pexels.com/photos/2923675/pexels-photo-2923675.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "A busca pela identidade em um futuro distópico." },
+            { title: "Pulp Fiction", genre: "Crime", img: "https://images.pexels.com/photos/20758854/pexels-photo-20758854.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", desc: "Histórias entrelaçadas no submundo do crime." },
+        ];
+
+        let userMovies = [];
+
+        function addMovie() {
+            const input = document.getElementById('movieInput');
+            const val = input.value.trim();
+            if (val && !userMovies.includes(val)) {
+                userMovies.push(val);
+                renderTags();
+                input.value = '';
+            }
+        }
+
+        function renderTags() {
+            const container = document.getElementById('movieList');
+            container.innerHTML = userMovies.map((m, i) => `
+                <span class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-sm flex items-center gap-2 border border-indigo-500/30">
+                    ${m} <button onclick="removeMovie(${i})" class="hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </span>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function removeMovie(index) {
+            userMovies.splice(index, 1);
+            renderTags();
+        }
+
+        function analyzeTaste() {
+            if (userMovies.length === 0) {
+                alert("Por favor, adicione pelo menos um filme ou série!");
+                return;
+            }
+
+            const btn = document.getElementById('btnAnalyze');
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processando Perfil...`;
+            lucide.createIcons();
+
+            // Simula tempo de processamento da IA
+            setTimeout(() => {
+                btn.innerHTML = `<i data-lucide="zap" class="w-5 h-5"></i> Analisar Meus Gostos`;
+                lucide.createIcons();
+                
+                document.getElementById('results').classList.remove('hidden');
+                
+                // Lógica simples de "IA": Se tiver palavras como "Dark", "Interstellar", "Sci-fi", sugere Sci-Fi.
+                // Se tiver "Breaking", "Godfather", sugere Crime.
+                const tasteText = userMovies.join(' ').toLowerCase();
+                let genrePreference = "Sci-Fi"; // Default
+                let reasoning = "Com base no seu interesse por narrativas complexas e mundos expansivos, nossa IA identificou que você aprecia obras com alta carga visual e conceitos filosóficos.";
+
+                if (tasteText.includes('crime') || tasteText.includes('breaking') || tasteText.includes('mafia')) {
+                    genrePreference = "Crime";
+                    reasoning = "Detectamos uma preferência por dramas criminais, tensão psicológica e tramas de poder. Sugerimos obras com personagens moralmente ambíguos.";
+                } else if (tasteText.includes('ação') || tasteText.includes('batman') || tasteText.includes('luta')) {
+                    genrePreference = "Action";
+                    reasoning = "Seu perfil indica entusiasmo por ritmo acelerado, coreografias de luta e conflitos épicos.";
+                }
+
+                document.getElementById('aiReasoning').innerText = reasoning;
+                
+                const filtered = movieDatabase.filter(m => m.genre === genrePreference);
+                renderMovies(filtered);
+                
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            }, 1500);
+        }
+
+        function renderMovies(movies) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = movies.map(m => `
+                <div class="movie-card relative group overflow-hidden rounded-2xl glass transition-all duration-500 hover:-translate-y-2">
+                    <img src="${m.img}" alt="${m.title}" class="w-full h-64 object-cover opacity-80 group-hover:opacity-40 transition">
+                    <div class="overlay absolute inset-0 p-6 flex flex-col justify-end opacity-0 transition-opacity duration-300 bg-gradient-to-t from-black via-black/60 to-transparent">
+                        <span class="text-xs font-bold text-indigo-400 uppercase mb-2">${m.genre}</span>
+                        <h3 class="text-xl font-bold mb-2">${m.title}</h3>
+                        <p class="text-sm text-slate-300 mb-4">${m.desc}</p>
+                        <button class="w-full py-2 bg-white text-black rounded-lg font-bold text-sm hover:bg-indigo-100 transition">
+                            Assistir Agora
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function resetAnalysis() {
+            userMovies = [];
+            document.getElementById('movieList').innerHTML = '';
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('movieInput').value = '';
+        }
+
+        // Inicializa ícones
+        lucide.createIcons();
+    </script>
 </body>
-
+</html>
