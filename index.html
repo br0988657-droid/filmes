@@ -67,11 +67,11 @@
       </nav>
     </div>
     <div class="flex items-center gap-3">
-      <button onclick="abrirModalConfig()" title="Configurações das APIs" class="text-gray-300 hover:text-white bg-gray-800/80 hover:bg-gray-700 p-2 rounded-lg transition border border-gray-700 flex items-center gap-1.5 text-xs">
+      <button onclick="abrirModalConfig()" title="Configurações das APIs" class="text-gray-300 hover:text-white bg-gray-800/80 hover:bg-gray-700 p-2 rounded-lg transition border border-gray-700">
         <i data-lucide="settings" class="w-4 h-4 text-netflix-red"></i>
         <span class="hidden sm:inline">APIs</span>
       </button>
-      <button onclick="scrollToElement('cinebot')" class="bg-netflix-red hover:bg-netflix-darkRed text-white px-4 py-2 rounded font-medium text-sm transition flex items-center gap-2 shadow-lg shadow-netflix-red/30">
+      <button onclick="scrollToElement('cinebot')" class="bg-netflix-red hover:bg-netflix-darkRed text-white px-4 py-2 rounded font-medium text-sm transition flex items-center gap-2 shadow-lg shadow-netflix-red/20">
         <i data-lucide="message-square" class="w-4 h-4"></i>
         <span>Chatbot</span>
       </button>
@@ -115,7 +115,7 @@
     </div>
   </section>
 
-  <!-- Módulo 1: Analisador Visual por Capas -->  <!-- Módulo 1: Analisador Visual por Capas -->
+  <!-- Módulo 1: Analisador Visual por Capas -->
   <section id="scanner" class="px-6 md:px-16 py-16 bg-gradient-to-b from-netflix-black via-[#101010] to-netflix-black">
     <div class="max-w-6xl mx-auto">
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
@@ -131,7 +131,7 @@
             0 selecionados
           </span>
           <button id="btn-analyze" onclick="executarAnaliseVisual()" disabled 
-                  class="bg-netflix-red disabled:bg-gray-800 disabled:text-gray-500 hover:bg-netflix-darkRed text-white px-5 py-2 rounded-md font-medium text-sm transition flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed">
+                  class="bg-netflix-red disabled:bg-gray-800 disabled:text-gray-500 hover:bg-netflix-darkRed text-white px-5 py-2 rounded-md font-medium text-sm transition flex items-center gap-2">
             <i data-lucide="cpu" class="w-4 h-4"></i> Analisar Gosto com IA
           </button>
         </div>
@@ -284,6 +284,21 @@
 
       <div class="p-6 space-y-4">
         <div class="flex items-center gap-4 text-xs text-gray-400">
-          <span id="modal-year
+          <span id="modal-year" class="font-semibold">2024</span>
+          <span>•</span>
+          <span id="modal-rating">8.5/10</span>
+          <span>•</span>
+          <span id="modal-genre">Drama</span>
+        </div>
+        <p id="modal-overview" class="text-sm text-gray-300 leading-relaxed">Sinopse do filme...</p>
+        <button class="w-full bg-netflix-red hover:bg-netflix-darkRed text-white py-2.5 rounded-lg font-bold transition">
+          ▶ Assistir Agora
+        </button>
+      </div>
+    </div>
+  </div>
 
-  <section id="scanner" class="px-6 md:px-16 py
+  <!-- Script Principal -->
+  <script src="script.js"></script>
+</body>
+</html>
